@@ -15,25 +15,44 @@ public class Database {
             InputStream f=new FileInputStream("init.ini");
             BufferedReader bf=new BufferedReader(new InputStreamReader(f));
             String str;
-            StringBuilder temp=new StringBuilder();
+            StringBuilder name=new StringBuilder();
+            StringBuilder inf=new StringBuilder();
             char c;
             while(true){
                 str=bf.readLine();
-                temp.delete(0,temp.length());
+                if(str==null) break;
+                name.delete(0,name.length());
+                inf.delete(0,inf.length());
                 int i;
                 for(i=0;i<str.length();i++){
                     c=str.charAt(i);
-                    if(c!='=') temp.append(c);
+                    if(c!='=') name.append(c);
                     else break;
                 }
-
-                if(str==null) break;
+                for(i=i+1;i<str.length();i++){
+                    c=str.charAt(i);
+                    inf.append(c);
+                }
+                switch (name.toString()){
+                    case "DRIVER":
+                        driver=inf.toString();
+                        break;
+                    case "URL":
+                        url=inf.toString();
+                        break;
+                    case "USERNAME":
+                        username=inf.toString();
+                        break;
+                    case "PASSWORD":
+                        password=inf.toString();
+                        break;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-
-
+        // 尝试连接
         try {
             Class.forName(this.driver);
             this.con = DriverManager.getConnection(url, username, password);
@@ -51,17 +70,23 @@ public class Database {
             e.printStackTrace();
             return false;
         }
+
         return true;
     }
 
     public Boolean jdbcExit() { //true表示正常关闭
         try {
-            this.con.close();
-            this.state.close();
-            this.rs.close();
-            System.out.println("与 " + con.getCatalog() + " 的连接已关闭");
+            if(state!=null) this.state.close();
+            if(rs!=null) this.rs.close();
+            if(con!=null) {
+                this.con.close();
+                System.out.println("与 " + con.getCatalog() + " 的连接已关闭");
+            }
             return true;
         } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }catch (Exception e){
             e.printStackTrace();
             return false;
         }
