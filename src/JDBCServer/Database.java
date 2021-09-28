@@ -9,7 +9,7 @@ public class Database {
     private ResultSet rs;
     private Statement state;
 
-    public Boolean jdbcConnection() {
+    public boolean jdbcConnection() {  //true成功
         String url="", username="", password="";
         try {
             InputStream f=new FileInputStream("init.ini");
@@ -74,7 +74,37 @@ public class Database {
         return true;
     }
 
-    public Boolean jdbcExit() { //true表示正常关闭
+    public int simpleImplement(String sql){ //-1表示执行未成功
+        if(con==null){
+            System.out.println("未连接数据库！");
+            return  -1;
+        }
+        try {
+            state=con.createStatement();
+            int res=state.executeUpdate(sql); //执行SQL语句
+
+            return res;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public ResultSet queryImplement(String sql){
+        if(con==null) {
+            System.out.println("未连接数据库！");
+            return rs;
+        }
+        try {
+            state=con.createStatement();
+            rs=state.executeQuery(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rs;
+    }
+
+    public boolean jdbcExit() { //true表示正常关闭
         try {
             if(state!=null) this.state.close();
             if(rs!=null) this.rs.close();
@@ -91,4 +121,24 @@ public class Database {
             return false;
         }
     }
+
+    public int listAllTable(boolean flag){  //返回表的个数,参数为true则打印
+        if(con==null){
+            System.out.println("未连接数据库！");
+            return -1;
+        }
+        int tableCount=0;
+        try {
+            rs=con.getMetaData().getTables(con.getCatalog(),null,null,null);
+            while(rs.next()){
+                tableCount++;
+                if (flag) System.out.println(tableCount+rs.getString("TABLE_NAME"));
+            }
+            return tableCount;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
 }
