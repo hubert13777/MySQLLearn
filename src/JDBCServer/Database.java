@@ -10,7 +10,7 @@ public class Database {
     private Statement state;
 
     public Boolean jdbcConnection() {
-        String url, username, password;
+        String url="", username="", password="";
         try {
             InputStream f=new FileInputStream("init.ini");
             BufferedReader bf=new BufferedReader(new InputStreamReader(f));
