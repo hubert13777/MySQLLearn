@@ -18,10 +18,9 @@ public class Database {
 
     /**
      * 连接MySQL数据库，连接信息从./init.ini读取
-     *
-     * @return 返回true表示连接成功
+     * @return 返回1表示连接成功，-1表示驱动加载失败，-2表示数据库连接失败，0表示未知错误
      */
-    public boolean jdbcConnection() {  //true成功
+    public byte jdbcConnection() {
         String url = "", username = "", password = "";
         try {
             InputStream f = new FileInputStream("init.ini");
@@ -62,32 +61,29 @@ public class Database {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return 0;
         }
         // 尝试连接
         try {
             Class.forName(this.driver);
             this.con = DriverManager.getConnection(url, username, password);
             if (!this.con.isClosed())
-                System.out.println("成功连接到数据库");
+                return 1;
+            else return 0;
         } catch (ClassNotFoundException e) {
-            System.out.println("驱动加载失败,连接终止!");
             e.printStackTrace();
-            return false;
+            return -1;
         } catch (SQLException e) {
-            System.out.println("数据库连接失败!");
             e.printStackTrace();
-            return false;
+            return -2;
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return 0;
         }
-
-        return true;
     }
 
     /**
-     * @return 返回true表示正常关闭
+     * @return 返回true表示正常关闭或原来就关闭
      */
     public boolean jdbcExit() {
         try {
@@ -95,7 +91,6 @@ public class Database {
             if (rs != null) this.rs.close();
             if (con != null) {
                 this.con.close();
-                System.out.println("与 " + con.getCatalog() + " 的连接已关闭");
             }
             return true;
         } catch (SQLException e) {
@@ -128,6 +123,7 @@ public class Database {
     }
 
     /**
+     * 执行有返回数据的SQL语句，若未连接会答应信息
      * @param sql 需要执行的SQL语句
      * @return 返回数据集
      */
@@ -146,8 +142,7 @@ public class Database {
     }
 
     /**
-     * 用于获取数据库中所有的表名
-     *
+     * 用于获取数据库中所有的表名，若未连接数据库会打印信息
      * @return 返回ArrayList数组，储存表名，若获取失败或数据库为空则为null
      */
     public ArrayList<String> listAllTable() {
@@ -174,7 +169,6 @@ public class Database {
 
     /**
      * 用于判断数据库中是否有指定名字的表
-     *
      * @param tableName 想要寻找的表名
      * @return 返回true表示该数据库中有这个表
      */
