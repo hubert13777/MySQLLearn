@@ -116,7 +116,7 @@ public class Database {
             int res = state.executeUpdate(sql); //执行SQL语句
 
             return res;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return -1;
         }
@@ -135,7 +135,7 @@ public class Database {
         try {
             state = con.createStatement();
             rs = state.executeQuery(sql);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return rs;

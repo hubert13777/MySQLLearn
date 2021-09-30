@@ -12,15 +12,13 @@ public class Mission01 {
             System.out.println("数据库连接成功");
             MyTableUsers users=new MyTableUsers(conn);
             MyTablePerson person=new MyTablePerson(conn);
+            // 创建表
             users.createTable();
             person.createTable();
-            try {
-                Thread.currentThread().sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            users.deleteTable();
-            person.deleteTable();
+            // 插入数据
+            users.dataInsert("zhangsan","123456");
+            person.dataInsert("zhangsan","张三","20","10001");
+
 
             conn.jdbcExit();
         }

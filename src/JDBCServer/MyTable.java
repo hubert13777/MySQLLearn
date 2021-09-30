@@ -6,9 +6,29 @@ public class MyTable {
     private Database database=null;
     private String sql;
     private String tableName="table";
-    public MyTable(){}
-    public MyTable(Database one){
-        database=one;
+
+    protected void setDatabase(Database database) {
+        this.database = database;
+    }
+
+    protected void setSql(String sql) {
+        this.sql = sql;
+    }
+
+    protected void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
+    protected Database getDatabase() {
+        return database;
+    }
+
+    protected String getSql() {
+        return sql;
+    }
+
+    protected String getTableName() {
+        return tableName;
     }
 
     /**
@@ -35,6 +55,10 @@ public class MyTable {
             System.out.println("表 "+tableName+" 不存在");
             return false;
         }
+    }
+    public boolean dataInsert(){
+        System.out.println("测试，没有插入任何数据");
+        return true;
     }
 
 }
