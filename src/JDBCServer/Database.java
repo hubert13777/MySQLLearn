@@ -3,6 +3,7 @@ package JDBCServer;
 import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Properties;
 
 /**
  * 最底层，负责连接数据库并发送SQL语句
@@ -11,7 +12,6 @@ import java.util.ArrayList;
  * @version v0.8
  */
 public class Database {
-    private String driver;
     private Connection con;
     private ResultSet rs;
     private Statement state;
@@ -21,51 +21,27 @@ public class Database {
      * @return 返回1表示连接成功，-1表示驱动加载失败，-2表示数据库连接失败，0表示未知错误
      */
     public byte jdbcConnection() {
-        String url = "", username = "", password = "";
+        String driver="",url = "", username = "", password = "";
+        //获取所需的连接信息
+        Properties pp=new Properties();
         try {
-            InputStream f = new FileInputStream("init.ini");
-            BufferedReader bf = new BufferedReader(new InputStreamReader(f));
-            String str;
-            StringBuilder name = new StringBuilder();
-            StringBuilder inf = new StringBuilder();
-            char c;
-            while (true) {
-                str = bf.readLine();
-                if (str == null) break;
-                name.delete(0, name.length());
-                inf.delete(0, inf.length());
-                int i;
-                for (i = 0; i < str.length(); i++) {
-                    c = str.charAt(i);
-                    if (c != '=') name.append(c);
-                    else break;
-                }
-                for (i = i + 1; i < str.length(); i++) {
-                    c = str.charAt(i);
-                    inf.append(c);
-                }
-                switch (name.toString()) {
-                    case "DRIVER":
-                        driver = inf.toString();
-                        break;
-                    case "URL":
-                        url = inf.toString();
-                        break;
-                    case "USERNAME":
-                        username = inf.toString();
-                        break;
-                    case "PASSWORD":
-                        password = inf.toString();
-                        break;
-                }
-            }
-        } catch (Exception e) {
+            InputStream in =new BufferedInputStream(new FileInputStream("init.properties"));
+            pp.load(in);
+            driver=pp.getProperty("DRIVER");
+            url=pp.getProperty("URL");
+            username=pp.getProperty("USERNAME");
+            password=pp.getProperty("PASSWORD");
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-            return 0;
+            return -1;
+        }catch(IOException e){
+            e.printStackTrace();
+            return -1;
         }
+
         // 尝试连接
         try {
-            Class.forName(this.driver);
+            Class.forName(driver);
             this.con = DriverManager.getConnection(url, username, password);
             if (!this.con.isClosed())
                 return 1;
