@@ -39,7 +39,7 @@ public class Mission01 {
             person.dataInsertReplace(users,"test1","测试用户1","33",null);
             person.dataInsertReplace(users,"test","张三","23","18877009966");
             person.dataInsertReplace(users,"admin","admin",null,null);
-
+            //输出数据信息
             users.dataAllSelect();
             person.dataAllSelect();
 
