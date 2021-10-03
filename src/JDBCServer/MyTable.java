@@ -74,11 +74,12 @@ public class MyTable {
 
     /**
      * 检测表中是否含有此字段名
+     *
      * @param key 等待检查的字段名
      * @return 返回true表示存在此字段名
      */
-    protected boolean columnJudge(String key){
-        if(getColumn().contains(key)) return true;
+    protected boolean columnJudge(String key) {
+        if (getColumn().contains(key)) return true;
         else return false;
     }
 
@@ -90,13 +91,13 @@ public class MyTable {
      * @return 返回true则说明数据存在
      */
     protected boolean dataJudge(String key, String value) {
-        if(!columnJudge(key)) {
+        if (!columnJudge(key)) {
             System.out.println("表中不存在此字段!");
             return false;
         }
         ResultSet temp = dataSelect(key, value);
         try {
-            if(temp==null||!temp.next()) return false;   //没有数据
+            if (temp == null || !temp.next()) return false;   //没有数据
             else return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -140,12 +141,12 @@ public class MyTable {
     }
 
     /**
-     * 删除指定主键字段值的数据
-     *
+     * 删除指定字段值的数据
+     * @param key 字段名
      * @param value 主键的字段值
      * @return 返回true表示删除成功
      */
-    public boolean dataDeleteSearch(String value) {
+    public boolean dataDeleteSearch(String key,String value) {
         // 检查是否存在连接、表和数据
         if (conJudge() == false) {
             System.out.println("与数据库连接中断，请重试！");
@@ -153,18 +154,18 @@ public class MyTable {
         } else if (tableJudge() == false) {
             System.out.println("奇怪，数据库中并不存在这张表！");
             return false;
-        } else if (!dataJudge(getPrimaryKey(), value)) {
-            System.out.println(getTableName() + ": 表中没有 " + getPrimaryKey() + " 为 [" + value + "] 的数据!");
+        } else if (!dataJudge(key, value)) {
+            System.out.println(getTableName() + ": 表中没有 " + key + " 为 [" + value + "] 的数据!");
             return false;
         }
 
-        setSql("delete from " + tableName + " where "+getPrimaryKey()+"=?;");
+        setSql("delete from " + tableName + " where " + key + "=?;");
         int res = getDatabase().simpleImplement(getSql(), value);
         if (res == -1) {
             System.out.println("删除失败！");
             return false;
         } else {
-            System.out.println(getTableName()+": ["+value+"]删除成功");
+            System.out.println(getTableName() + ": [" + value + "]删除成功");
             return true;
         }
     }
@@ -197,12 +198,53 @@ public class MyTable {
      * @return 返回true说明存在这条数据
      */
     public ResultSet dataSelect(String key, String value) {
-        if(!columnJudge(key)) {
+        if (!columnJudge(key)) {
             System.out.println("表中不存在此字段!");
             return null;
         }
-        setSql("select * from " + getTableName() + " where "+key+"=?;");
+        setSql("select * from " + getTableName() + " where " + key + "=?;");
         ResultSet rs = getDatabase().queryImplement(getSql(), value);
         return rs;
+    }
+
+    /**
+     * 用来输出表的所有数据
+     *
+     * @return 返回false表示打印出错
+     */
+    public boolean dataAllSelect() {
+        String sql = "select * from " + getTableName();
+        ResultSet rs = getDatabase().queryImplement(sql);
+        try {
+            int count = getColumn().size();
+            String[] temp = new String[count + 1];
+            System.out.println("[表 " + getTableName()+"]");
+            for(int i=1;i<=getColumn().size();i++) System.out.printf("------------");
+            System.out.println();
+            for (int i = 0; i < count; i++) {
+                System.out.printf(getColumn().get(i));
+                int len = getColumn().get(i).length();
+                for (len = len + 1; len <= 12; len++) System.out.printf(" ");
+            }
+            System.out.println();
+            for(int i=1;i<=getColumn().size();i++) System.out.printf("------------");
+            System.out.println();
+            // 输出表中数据
+            while (rs.next()) {
+                for (int i = 0; i < count; i++) {
+                    temp[i] = rs.getString(getColumn().get(i));
+                    if (temp[i] != null) System.out.printf("%-12s",temp[i]);
+                    else System.out.printf("            ");  //当MySQL中数据为null时的输出
+                }
+                System.out.println();
+            }
+            for(int i=1;i<=getColumn().size();i++) System.out.printf("------------");
+            System.out.println();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
     }
 }

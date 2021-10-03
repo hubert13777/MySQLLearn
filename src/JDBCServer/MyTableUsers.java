@@ -42,16 +42,16 @@ public class MyTableUsers extends MyTable {
             System.out.println("与数据库连接中断，添加失败！");
             return false;
         } else if (dataJudge("username", username) == true) {
-            System.out.println(getTableName() + ": 已存在[" + username + "]，添加失败！");
+            System.out.println(getTableName() + ": 已存在username=[" + username + "]的数据，添加失败！");
             return false;
         }
         setSql("insert into users values (?,?);");
         int res = getDatabase().simpleImplement(getSql(), username, pass);
         if (res == -1) {
-            System.out.println(getTableName() + ": 数据添加失败！");
+            System.out.println(getTableName() + ": 数据["+username+"]添加失败!");
             return false;
         } else {
-            System.out.println(getTableName() + ": 数据添加成功");
+            System.out.println(getTableName() + ": 数据["+username+"]添加成功");
             return true;
         }
     }
