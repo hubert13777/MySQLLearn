@@ -92,7 +92,7 @@ public class MyTable {
      */
     protected boolean dataJudge(String key, String value) {
         if (!columnJudge(key)) {
-            System.out.println("表中不存在此字段!");
+            System.out.println(getTableName()+": 表中不存在此字段!");
             return false;
         }
         ResultSet temp = dataSelect(key, value);
@@ -131,13 +131,6 @@ public class MyTable {
             setDatabase(null);
             return false;
         }
-    }
-
-    /**
-     * 用来插入数据
-     */
-    public void dataInsert() {
-        System.out.println("父类函数测试，没有插入任何数据");
     }
 
     /**
@@ -208,12 +201,22 @@ public class MyTable {
     }
 
     /**
-     * 用来输出表的所有数据
+     * 返回的ResultSet包括表中所有数据
+     * @return 返回一个数据集，null表示出错，为空表示没有数据
+     */
+    public ResultSet dataSelectAll(){
+        setSql("select * from "+getTableName()+";");
+        ResultSet rs=getDatabase().queryImplement(getSql());
+        return rs;
+    }
+
+    /**
+     * 用来打印表中所有数据
      *
      * @return 返回false表示打印出错
      */
-    public boolean dataAllSelect() {
-        String sql = "select * from " + getTableName();
+    public boolean dataPrint() {
+        sql = "select * from " + getTableName();
         ResultSet rs = getDatabase().queryImplement(sql);
         try {
             int count = getColumn().size();
