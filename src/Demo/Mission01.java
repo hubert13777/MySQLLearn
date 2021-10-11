@@ -25,7 +25,7 @@ public class Mission01 {
             System.out.println();
 
             String c=sc.next();
-            // 2.插入数据
+            // 2.插入数据\
             users.dataInsert("ly","123456");
             users.dataInsert("liming","345678");
             users.dataInsert("test","11111");

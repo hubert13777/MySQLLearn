@@ -14,7 +14,6 @@ import java.util.Properties;
 public class Database {
     private Connection con;
     private ResultSet rs;
-    private Statement state;
     private PreparedStatement preState;
 
     /**
@@ -65,9 +64,8 @@ public class Database {
      */
     public boolean jdbcExit() {
         try {
-            if (state != null) state.close();
-            if (preState != null) preState.close();
             if (rs != null) rs.close();
+            if (preState != null) preState.close();
             if (con != null) {
                 con.close();
             }
