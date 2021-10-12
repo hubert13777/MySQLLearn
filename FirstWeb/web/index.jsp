@@ -8,9 +8,24 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
   <head>
-    <title>$Title$</title>
+    <title>静态网页测试</title>
   </head>
   <body>
-  $END$
+  <h1>我他妈太难了</h1>
+
+  <table border="1">
+    <tr>
+      <th>数据库名</th>
+      <td >test</td>
+    </tr>
+    <tr>
+      <th rowspan="2">表名</th>
+      <td>person</td>
+    </tr>
+    <tr>
+      <td>users</td>
+    </tr>
+  </table>
+
   </body>
 </html>
