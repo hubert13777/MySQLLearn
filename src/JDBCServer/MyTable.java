@@ -48,7 +48,7 @@ public class MyTable {
         return column;
     }
 
-    public void setColumn(String... str) {
+    protected void setColumn(String... str) {
         Collections.addAll(column, str);
     }
 
@@ -92,7 +92,7 @@ public class MyTable {
      */
     protected boolean dataJudge(String key, String value) {
         if (!columnJudge(key)) {
-            System.out.println(getTableName()+": 表中不存在此字段!");
+            System.out.println(getTableName() + ": 表中不存在此字段!");
             return false;
         }
         ResultSet temp = dataSelect(key, value);
@@ -135,11 +135,12 @@ public class MyTable {
 
     /**
      * 删除指定字段值的数据
-     * @param key 字段名
+     *
+     * @param key   字段名
      * @param value 主键的字段值
      * @return 返回true表示删除成功
      */
-    public boolean dataDeleteSearch(String key,String value) {
+    public boolean dataDeleteSearch(String key, String value) {
         // 检查是否存在连接、表和数据
         if (conJudge() == false) {
             System.out.println("与数据库连接中断，请重试！");
@@ -202,11 +203,12 @@ public class MyTable {
 
     /**
      * 返回的ResultSet包括表中所有数据
+     *
      * @return 返回一个数据集，null表示出错，为空表示没有数据
      */
-    public ResultSet dataSelectAll(){
-        setSql("select * from "+getTableName()+";");
-        ResultSet rs=getDatabase().queryImplement(getSql());
+    public ResultSet dataSelectAll() {
+        setSql("select * from " + getTableName() + ";");
+        ResultSet rs = getDatabase().queryImplement(getSql());
         return rs;
     }
 
@@ -221,8 +223,8 @@ public class MyTable {
         try {
             int count = getColumn().size();
             String[] temp = new String[count + 1];
-            System.out.println("[表 " + getTableName()+"]");
-            for(int i=1;i<=getColumn().size();i++) System.out.printf("------------");
+            System.out.println("[表 " + getTableName() + "]");
+            for (int i = 1; i <= getColumn().size(); i++) System.out.printf("------------");
             System.out.println();
             for (int i = 0; i < count; i++) {
                 System.out.printf(getColumn().get(i));
@@ -230,18 +232,18 @@ public class MyTable {
                 for (len = len + 1; len <= 12; len++) System.out.printf(" ");
             }
             System.out.println();
-            for(int i=1;i<=getColumn().size();i++) System.out.printf("------------");
+            for (int i = 1; i <= getColumn().size(); i++) System.out.printf("------------");
             System.out.println();
             // 输出表中数据
             while (rs.next()) {
                 for (int i = 0; i < count; i++) {
                     temp[i] = rs.getString(getColumn().get(i));
-                    if (temp[i] != null) System.out.printf("%-12s",temp[i]);
+                    if (temp[i] != null) System.out.printf("%-12s", temp[i]);
                     else System.out.printf("            ");  //当MySQL中数据为null时的输出
                 }
                 System.out.println();
             }
-            for(int i=1;i<=getColumn().size();i++) System.out.printf("------------");
+            for (int i = 1; i <= getColumn().size(); i++) System.out.printf("------------");
             System.out.println();
             return true;
         } catch (Exception e) {
